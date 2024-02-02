@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class teacher extends Model
 {
@@ -18,4 +19,9 @@ class teacher extends Model
     {
         return $this->HasMany(schedule::class);
     }
+    public function lesson(): HasManyThrough
+    {
+        return $this->HasManyThrough(lesson::class, classroom::class);
+    }
+
 }

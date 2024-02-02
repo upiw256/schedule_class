@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('teacher_id')->constrained('teachers')->cascadeOnDelete();
             $table->foreignId('classroom_id')->constrained('classrooms')->cascadeOnDelete();
-            $table->string('Lessons_to');
+            $table->string('day');
+            $table->string('lessons_to');
             $table->timestamps();
         });
     }

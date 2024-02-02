@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ClassroomResource\RelationManagers;
 
+// use App\Models\teacher;
 use App\Models\teacher;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,33 +14,45 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ScheduleRelationManager extends RelationManager
 {
-    protected static string $relationship = 'schedule';
+    protected static string $relationship = 'lesson';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label('Name of lesson')
+                    ->maxLength(255)
+                    ->required(),
                 Forms\Components\Select::make('teacher_id')
                     ->label('Teacher')
-                    ->getSearchResultsUsing(fn(string $search): array => teacher::where('name', 'like', "%{$search}%")->limit(50)->pluck('name', 'id')->toArray())
-                    ->getOptionLabelUsing(fn($value): ?string => teacher::find($value)?->name)
+                    ->relationship('teachers', 'name')
+                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                     ->searchable()
                     ->preload()
                     ->required(),
-                Forms\Components\TextInput::make('lessons_to')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('max_hours')
+                    ->label('Max Hours')
+                    ->numeric()
+                    ->required(),
+                Forms\Components\Select::make('type')
+                    ->label('Type of lesson')
+                    ->options([
+                        'mandatory' => 'Mandatory',
+                        'common' => 'Common',
+                        'addition' => 'Addition',
+                    ])
+                    ->required(),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('lessons_to')
+            // ->recordTitleAttribute('teacher_id')
             ->columns([
-                Tables\Columns\TextColumn::make('lessons_to')->label('lessons to')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('teacher.name')->label('Teacher')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('teacher.lesson')->label('lesson')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('teachers.name'),
+                Tables\Columns\TextColumn::make('name')->label('lesson')->searchable()->sortable(),
             ])
             ->filters([
                 //

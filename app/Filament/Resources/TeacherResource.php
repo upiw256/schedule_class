@@ -35,9 +35,7 @@ class TeacherResource extends Resource
                     ->label('Phone number')
                     ->tel()
                     ->required(),
-                Forms\Components\TextInput::make('lesson')
-                    ->required()
-                    ->maxLength(255),
+
             ]);
     }
 
@@ -48,7 +46,6 @@ class TeacherResource extends Resource
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('email')->sortable(),
                 Tables\Columns\TextColumn::make('phone')->sortable(),
-                Tables\Columns\TextColumn::make('lesson')->searchable()->sortable(),
             ])
             ->filters([
                 //

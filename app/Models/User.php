@@ -11,11 +11,17 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
-    public function canAccessPanel(Panel $panel): bool
+    public function panel(Panel $panel): Panel
     {
-        return $this->hasVerifiedEmail();
+        return $panel
+            // ...
+            ->login()
+            ->registration()
+            ->passwordReset()
+            ->emailVerification()
+            ->profile();
     }
     use HasApiTokens, HasFactory, Notifiable;
 
