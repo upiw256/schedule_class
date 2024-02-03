@@ -4,18 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class lesson extends Model
 {
-    public function teachers(): HasMany
+    public function teacher():BelongsTo
     {
-        return $this->hasMany(teacher::class);
+        return $this->belongsTo(Teacher::class);
     }
 
-    public function classroom(): HasMany
+    public function classroom():BelongsTo
     {
-        return $this->hasMany(classroom::class);
+        return $this->belongsTo(Classroom::class);
     }
     use HasFactory;
 }

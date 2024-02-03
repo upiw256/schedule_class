@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources\ClassroomResource\RelationManagers;
 
+// use App\Models\teacher;
+use App\Models\teacher;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ScheduleRelationManager extends RelationManager
+class LessonRelationManager extends RelationManager
 {
     protected static string $relationship = 'lesson';
 
@@ -19,47 +20,45 @@ class ScheduleRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('day')
-                    ->label('Day')
-                    ->options([
-                        'senin' => 'Senin',
-                        'selasa' => 'Selasa',
-                        'rabu' => 'Rabu',
-                        'kamis' => 'Kamis',
-                        'jumat' => 'Jumat'
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('lessons_to')
-                    ->numeric()
-                    ->label('Lesson To')
+                Forms\Components\TextInput::make('name')
+                    ->label('Name of lesson')
+                    ->maxLength(255)
                     ->required(),
                 Forms\Components\Select::make('teacher_id')
                     ->label('Teacher')
                     ->relationship('teacher', 'name')
+                    // ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                    ->unique()
+                    ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                    ->searchable()
+                    ->preload()
                     ->required(),
-
+                Forms\Components\TextInput::make('max_hours')
+                    ->label('Max Hours')
+                    ->numeric()
+                    ->required(),
+                Forms\Components\Select::make('type')
+                    ->label('Type of lesson')
+                    ->options([
+                        'mandatory' => 'Mandatory',
+                        'common' => 'Common',
+                        'addition' => 'Addition',
+                    ])
+                    ->required(),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('lesson_id')
+            ->recordTitleAttribute('teacher_id')
             ->columns([
-                Tables\Columns\TextColumn::make('lessons_to'),
-                Tables\Columns\TextColumn::make('day'),
                 Tables\Columns\TextColumn::make('teacher.name'),
-                Tables\Columns\TextColumn::make('lesson'),
+                Tables\Columns\TextColumn::make('name')->label('lesson')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('max_hours')->label('Max Hours')->searchable()->sortable(),
             ])
             ->filters([
-                SelectFilter::make('day')
-                    ->options([
-                        'senin' => 'Senin',
-                        'selasa' => 'Selasa',
-                        'rabu' => 'Rabu',
-                        'kamis' => 'Kamis',
-                        'jumat' => 'Jumat',
-                    ]),
+                //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

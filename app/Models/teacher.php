@@ -19,9 +19,9 @@ class teacher extends Model
     {
         return $this->HasMany(schedule::class);
     }
-    public function lesson(): HasManyThrough
+    public function lesson(): hasMany
     {
-        return $this->HasManyThrough(lesson::class, classroom::class);
+        return $this->hasMany(Lesson::class);
     }
 
 }
